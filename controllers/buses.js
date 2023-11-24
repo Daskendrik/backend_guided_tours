@@ -11,7 +11,10 @@ module.exports.getAllbus = function (req, res) {
       },
       {
         element: 'Body',
-        elements: [['123sad4', '123', '123']],
+        elements: [
+          ['r458ww', 'Автобусы МСК', '879-9548-88'],
+          ['r458ww', 'Автобусы МСК', '879-9548-88'],
+        ],
       },
     ],
   });

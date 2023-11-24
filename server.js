@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const corc = require('cors');
 
 const busesRoutes = require('./routes/buses');
 // создаем объект приложения
@@ -10,14 +9,13 @@ app.use(express.static(__dirname + '/build')); //добавлено, чтобы 
 
 //Обработка запросов с вью всех ТС
 app.use('/api/buses', busesRoutes); //localhost:3000/api/buses/ :getAllbus
-app.use(corc());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 // определяем обработчик для маршрута "/"
-app.get('*', function (req, res) {
-  // отправляем ответ
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-});
+// app.get('*', function (req, res) {
+//   // отправляем ответ
+//   res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+// });
 // начинаем прослушивать подключения на 3000 порту
 app.listen(PORT, () => {
   console.log(__dirname);

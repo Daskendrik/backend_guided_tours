@@ -1,3 +1,4 @@
+const axios = require('axios');
 module.exports.getAllbus = function (req, res) {
   res.status(200).json({
     req: [
@@ -21,7 +22,7 @@ module.exports.getAllbus = function (req, res) {
 };
 
 module.exports.createBus = function (req, res) {
-  console.log(req);
+  // console.log(req);
   res.status(200).json({
     status: 'OK',
     errorText: 'Все нормал',
@@ -30,7 +31,9 @@ module.exports.createBus = function (req, res) {
 };
 
 module.exports.deleteBus = function (req, res) {
-  console.log(req);
+  console.log(req.params);
+  console.log(req.query);
+  console.log(req.body);
   res.status(200).json({
     status: 'OK',
     errorText: 'Все нормал',

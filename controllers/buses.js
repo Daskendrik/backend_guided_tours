@@ -31,11 +31,11 @@ module.exports.createBus = function (req, res) {
 };
 
 module.exports.deleteBus = function (req, res) {
-  console.log(req.params);
   console.log(req.query);
-  console.log(req.body);
+  console.log(req.query.targetRow);
   res.status(200).json({
     status: 'OK',
-    errorText: 'Все нормал',
+    errorText: '',
+    comment: `Была удалена запись с id = ${req.query.targetRow}`,
   });
 };

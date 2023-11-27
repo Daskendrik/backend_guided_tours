@@ -1,8 +1,10 @@
 const express = require('express');
-const controller = require('../controllers/buses');
+const controllerBus = require('../controllers/buses');
 
 const router = express.Router();
 
-router.get('/getAllbus', controller.getAllbus);
+router.get('/getAllbus', controllerBus.getAllbus);
+router.get('/createBus', controllerBus.createBus);
+router.get('/deleteBus', controllerBus.deleteBus);
 
 module.exports = router;

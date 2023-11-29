@@ -7,6 +7,16 @@ const app = express();
 app.use(express.static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
 //адреса в индексе должны быть /static/css/main.a31be556.css
 
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+  next();
+});
+
 //Обработка запросов с вью всех ТС
 app.use('/api/buses', busesRoutes); //localhost:3000/api/buses/ :getAllbus
 

@@ -4,7 +4,7 @@ const controllerBus = require('../controllers/buses');
 const router = express.Router();
 
 router.get('/getAllbus', controllerBus.getAllbus);
-router.get('/createBus', controllerBus.createBus);
-router.get('/deleteBus', controllerBus.deleteBus);
+router.put('/createBus', controllerBus.createBus);
+router.delete('/deleteBus', controllerBus.deleteBus);
 
 module.exports = router;

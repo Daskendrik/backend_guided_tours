@@ -3,6 +3,7 @@ const path = require('path');
 
 const busesRoutes = require('./routes/buses');
 const companyBus = require('./routes/company_bus');
+const typeLov = require('./routes/type_lov');
 // создаем объект приложения
 const app = express();
 app.use(express.static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
@@ -18,9 +19,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-//Обработка запросов с вью всех ТС
-app.use('/api/buses', busesRoutes); //localhost:3000/api/buses/
-app.use('/api/company_bus', companyBus); //localhost:3000/api/buses/
+//localhost:3000/api/
+app.use('/api/buses', busesRoutes);
+app.use('/api/company_bus', companyBus);
+app.use('/api/type_lov', typeLov);
 
 const PORT = process.env.PORT || 3001;
 // определяем обработчик для маршрута "/"

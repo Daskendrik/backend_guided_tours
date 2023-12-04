@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const busesRoutes = require('./routes/buses');
+const companyBus = require('./routes/company_bus');
 // создаем объект приложения
 const app = express();
 app.use(express.static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
@@ -18,7 +19,8 @@ app.use(function (req, res, next) {
 });
 
 //Обработка запросов с вью всех ТС
-app.use('/api/buses', busesRoutes); //localhost:3000/api/buses/ :getAllbus
+app.use('/api/buses', busesRoutes); //localhost:3000/api/buses/
+app.use('/api/company_bus', companyBus); //localhost:3000/api/buses/
 
 const PORT = process.env.PORT || 3001;
 // определяем обработчик для маршрута "/"

@@ -3,9 +3,9 @@ const { Pool } = require('pg');
 // Конфигурация базы данных PostgreSQL
 const pooltest = new Pool({
   user: 'postgres', // Пользователь базы данных
-  host: 'localhost', // Хост базы данных (обычно localhost)
-  database: 'test_bd', // Название базы данных, которую мы создали
-  password: 'qwerty$4', // Пароль пользователя postgres
+  host: '185.246.183.199', // Хост базы данных (обычно localhost)
+  database: 'test_db', // Название базы данных, которую мы создали
+  password: 'qwerty$1234', // Пароль пользователя postgres
   port: 5432, // Порт PostgreSQL (по умолчанию 5432)
 });
 

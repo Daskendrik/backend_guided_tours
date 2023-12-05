@@ -1,8 +1,8 @@
-const pooltest = require('../settings/bd');
+const pool = require('../settings/bd');
 
 module.exports.getAllbus = function (req, res) {
   const brRows = [];
-  pooltest.query('SELECT * from TR_BUSES', (err, result) => {
+  pool.query('SELECT * from TR_BUSES', (err, result) => {
     if (err) {
       console.log(err);
     } else {

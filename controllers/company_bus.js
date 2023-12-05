@@ -1,8 +1,8 @@
-const pooltest = require('../settings/bd');
+const pool = require('../settings/bd');
 
 module.exports.allCompanyBus = function (req, res) {
   const brRows = [];
-  pooltest.query('SELECT * from TR_COMPANY_BUS', (err, result) => {
+  pool.query('SELECT * from TR_COMPANY_BUS', (err, result) => {
     if (err) {
       console.log(err);
     } else {

@@ -4,6 +4,7 @@ const path = require('path');
 const busesRoutes = require('./routes/buses');
 const companyBus = require('./routes/company_bus');
 const typeLov = require('./routes/type_lov');
+const contact = require('./routes/contact');
 // создаем объект приложения
 const app = express();
 app.use(express.static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
@@ -23,6 +24,7 @@ app.use(function (req, res, next) {
 app.use('/api/buses', busesRoutes);
 app.use('/api/company_bus', companyBus);
 app.use('/api/type_lov', typeLov);
+app.use('/api/contact', contact);
 
 const PORT = process.env.PORT || 3001;
 // определяем обработчик для маршрута "/"

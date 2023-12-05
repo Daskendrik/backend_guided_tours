@@ -1,4 +1,4 @@
-const pooltest = require('../settings/bd');
+const pool = require('../settings/bd');
 
 module.exports.get = function (req, res) {
   const brRows = [];
@@ -8,7 +8,7 @@ module.exports.get = function (req, res) {
     { title: 'Название', id: 'name' },
     { title: 'Код', id: 'code' },
   ];
-  pooltest.query('SELECT * from TR_TYPE_LOV', (err, result) => {
+  pool.query('SELECT * from TR_TYPE_LOV', (err, result) => {
     if (err) {
       console.log(err);
     } else {

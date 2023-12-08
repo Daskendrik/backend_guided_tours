@@ -1,6 +1,8 @@
 const pool = require('../settings/bd');
 
 module.exports.getAll = function (req, res) {
+  console.log(req.query);
+
   const brRows = [];
   const tableTitle = [
     //Заголовок таблиц
@@ -46,6 +48,7 @@ module.exports.getAll = function (req, res) {
 
 module.exports.find = function (req, res) {
   // console.log(req);
+  console.log(req);
   res.status(200).json({
     status: 'OK',
   });

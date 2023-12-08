@@ -15,8 +15,6 @@ module.exports.getAll = function (req, res) {
     } else {
       for (let i = 0; i < result.rows.length; i++) {
         const element = result.rows[i];
-        let type;
-        let seach = `Select name from tr_type_lov where code = '${element.type_code}'`;
         brRows.push([
           element.id,
           element.last_name +
@@ -25,7 +23,7 @@ module.exports.getAll = function (req, res) {
             ' ' +
             element.middle_name,
           element.tel,
-          type,
+          element.type_code,
         ]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
       console.log(brRows);

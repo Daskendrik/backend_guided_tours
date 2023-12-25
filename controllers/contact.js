@@ -1,8 +1,8 @@
 const pool = require('../settings/bd');
 
 module.exports.getAll = function (req, res) {
-  console.log(req.query);
-
+  const data = req.query;
+  console.log(data);
   const brRows = [];
   const tableTitle = [
     //Заголовок таблиц
@@ -11,7 +11,15 @@ module.exports.getAll = function (req, res) {
     { title: 'Телефон', id: 'tel' },
     { title: 'Тип', id: 'type' },
   ];
-  pool.query('SELECT * from TR_CONTACT', (err, result) => {
+  let seachSpek = 'SELECT * from TR_CONTACT';
+  if (data.phone && data.surname) {
+    seachSpek = `SELECT * from TR_CONTACT where tel = '${data.phone}' AND last_name = '${data.surname}'`;
+  } else if (data.phone) {
+    seachSpek = `SELECT * from TR_CONTACT where tel = '${data.phone}'`;
+  } else if (data.surname) {
+    seachSpek = `SELECT * from TR_CONTACT where last_name = '${data.surname}'`;
+  }
+  pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
     } else {

@@ -34,7 +34,8 @@ module.exports.getAllbus = function (req, res) {
 };
 
 module.exports.createBus = function (req, res) {
-  // console.log(req);
+  const data = req.query;
+  console.log(data);
   res.status(200).json({
     status: 'OK',
     errorText: 'Все нормал',

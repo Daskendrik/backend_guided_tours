@@ -63,9 +63,30 @@ module.exports.find = function (req, res) {
 };
 
 module.exports.create = function (req, res) {
-  // console.log(req);
-  res.status(200).json({
-    status: 'OK',
+  const data = req.body;
+  console.log(data);
+  const namecol = [];
+  const valuecol = [];
+  data.forEach((element) => {
+    if (element.Value) {
+      namecol.push(element.id);
+      valuecol.push(`${element.Value}`);
+    }
+  });
+
+  const insert = `INSERT INTO TR_CONTACT(${namecol}, id) values (${valuecol}, 10)`;
+  console.log(insert);
+
+  pool.query(insert, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+
+    res.status(200).json({
+      status: 'OK',
+    });
   });
 };
 

@@ -7,6 +7,7 @@ const typeLov = require('./routes/type_lov');
 const contact = require('./routes/contact');
 // создаем объект приложения
 const app = express();
+app.use(express.json());
 app.use(express.static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
 //адреса в индексе должны быть /static/css/main.a31be556.css
 

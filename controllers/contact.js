@@ -55,10 +55,22 @@ module.exports.getAll = function (req, res) {
 };
 
 module.exports.find = function (req, res) {
-  // console.log(req);
   console.log(req);
   res.status(200).json({
     status: 'OK',
+  });
+};
+
+module.exports.getLast = function (req, res) {
+  console.log(req);
+  seachSpek = 'SELECT MAX(ID) FROM TR_CONTACT';
+  pool.query(seachSpek, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else
+      res.status(200).json({
+        req: result.rows[0].max,
+      });
   });
 };
 
@@ -70,11 +82,11 @@ module.exports.create = function (req, res) {
   data.forEach((element) => {
     if (element.Value) {
       namecol.push(element.id);
-      valuecol.push(`${element.Value}`);
+      valuecol.push(`'${element.Value}'`);
     }
   });
 
-  const insert = `INSERT INTO TR_CONTACT(${namecol}, id) values (${valuecol}, 10)`;
+  const insert = `INSERT INTO TR_CONTACT(${namecol}) values (${valuecol})`;
   console.log(insert);
 
   pool.query(insert, (err, result) => {

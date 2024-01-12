@@ -54,13 +54,6 @@ module.exports.getAll = function (req, res) {
   });
 };
 
-module.exports.find = function (req, res) {
-  console.log(req);
-  res.status(200).json({
-    status: 'OK',
-  });
-};
-
 module.exports.getLast = function (req, res) {
   console.log(req);
   seachSpek = 'SELECT MAX(ID) FROM TR_CONTACT';
@@ -71,6 +64,23 @@ module.exports.getLast = function (req, res) {
       res.status(200).json({
         req: result.rows[0].max,
       });
+  });
+};
+
+module.exports.delete = function (req, res) {
+  console.log('delete');
+  const data = req.body;
+  console.log(data);
+  const del = `Delete FROM TR_CONTACT WHERE ID=${data.targetRow}`;
+  pool.query(del, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+    res.status(200).json({
+      status: 'OK',
+    });
   });
 };
 

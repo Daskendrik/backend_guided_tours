@@ -11,13 +11,14 @@ module.exports.getAll = function (req, res) {
     { title: 'Телефон', id: 'tel' },
     { title: 'Тип', id: 'type' },
   ];
-  let seachSpek = 'SELECT * from TR_CONTACT';
+  let seachSpek =
+    'select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code order by id';
   if (data.phone && data.surname) {
-    seachSpek = `SELECT * from TR_CONTACT where tel = '${data.phone}' AND last_name = '${data.surname}'`;
+    seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.tel = '${data.phone}' AND a.last_name = '${data.surname}' order by id`;
   } else if (data.phone) {
-    seachSpek = `SELECT * from TR_CONTACT where tel = '${data.phone}'`;
+    seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.tel = '${data.phone}' order by id`;
   } else if (data.surname) {
-    seachSpek = `SELECT * from TR_CONTACT where last_name = '${data.surname}'`;
+    seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
   }
   pool.query(seachSpek, (err, result) => {
     if (err) {
@@ -33,7 +34,7 @@ module.exports.getAll = function (req, res) {
             ' ' +
             element.middle_name,
           element.tel,
-          element.type_code,
+          element.name,
         ]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
       console.log(brRows);

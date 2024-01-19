@@ -66,6 +66,8 @@ module.exports.getlov = function (req, res) {
       });
     } else {
       console.log(result.rows);
+      const arr = result.rows;
+      console.log(arr);
       res.status(200).json({
         status: 'OK',
         req: result.rows,

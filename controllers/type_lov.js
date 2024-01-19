@@ -51,3 +51,25 @@ module.exports.delete = function (req, res) {
     comment: `Была удалена запись с id = ${req.query.targetRow}`,
   });
 };
+
+module.exports.getlov = function (req, res) {
+  console.log('getlov');
+  const data = req.query;
+  console.log(data);
+  const seach = `Select * from tr_lov where lov_type = '${data.lov}'`;
+  console.log(seach);
+  pool.query(seach, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400).json({
+        status: 'Error',
+      });
+    } else {
+      console.log(result.rows);
+      res.status(200).json({
+        status: 'OK',
+        req: result.rows,
+      });
+    }
+  });
+};

@@ -56,15 +56,33 @@ module.exports.getAll = function (req, res) {
 };
 
 module.exports.getLast = function (req, res) {
+  let lastId;
+  let lov;
   console.log(req);
   seachSpek = 'SELECT MAX(ID) FROM TR_CONTACT';
   pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
-    } else
-      res.status(200).json({
-        req: result.rows[0].max,
-      });
+    } else lastId = result.rows[0].max;
+    console.log('getlov');
+    const seach = `Select * from tr_lov where lov_type = 'CONTACT'`;
+    pool.query(seach, (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(400).json({
+          status: 'Error',
+        });
+      } else {
+        console.log(result.rows);
+        const arr = result.rows;
+        console.log(arr);
+        lov = result.rows;
+        res.status(200).json({
+          status: 'OK',
+          req: [lastId, lov],
+        });
+      }
+    });
   });
 };
 

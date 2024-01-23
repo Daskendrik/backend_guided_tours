@@ -1,5 +1,67 @@
 const pool = require('../settings/bd');
 
+module.exports.getById = function (req, res) {
+  const data = req.query;
+  const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
+  let reqData = [];
+  console.log(data);
+  console.log(seachSpek);
+  pool.query(seachSpek, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result.rows);
+      reqData = [
+        {
+          Lable: 'Фамилия',
+          Value: result.rows[0].last_name,
+          Type: 'text',
+          id: 1,
+        },
+        {
+          Lable: 'Имя',
+          Value: result.rows[0].first_name,
+          Type: 'text',
+          id: 2,
+        },
+        {
+          Lable: 'Отчество',
+          Value: result.rows[0].middle_name,
+          Type: 'text',
+          id: 3,
+        },
+        {
+          Lable: 'Телефон',
+          Value: result.rows[0].tel,
+          Type: 'text',
+          id: 4,
+        },
+        {
+          Lable: 'Почта',
+          Value: result.rows[0].email,
+          Type: 'text',
+          id: 5,
+        },
+        {
+          Lable: 'Тип',
+          Value: result.rows[0].name,
+          Type: 'text',
+          id: 6,
+        },
+        {
+          Lable: 'Комментарий',
+          Value: result.rows[0].comment,
+          Type: 'textarea',
+          id: 6,
+        },
+      ];
+      res.status(200).json({
+        req: reqData,
+      });
+    }
+  });
+};
+
 module.exports.getAll = function (req, res) {
   const data = req.query;
   console.log(data);
@@ -20,6 +82,7 @@ module.exports.getAll = function (req, res) {
   } else if (data.surname) {
     seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
   }
+  console.log(seachSpek);
   pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
@@ -120,14 +183,19 @@ module.exports.create = function (req, res) {
 
   pool.query(insert, (err, result) => {
     if (err) {
+      console.log(1);
       console.log(err);
+      console.log(2);
+      res.status(200).json({
+        status: 'BAD',
+        error: err,
+        text: 'Привышена длина в поле каком либо поле',
+      });
     } else {
-      console.log(result);
+      res.status(200).json({
+        status: 'OK',
+      });
     }
-
-    res.status(200).json({
-      status: 'OK',
-    });
   });
 };
 

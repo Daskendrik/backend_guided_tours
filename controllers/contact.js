@@ -16,47 +16,65 @@ module.exports.getById = function (req, res) {
           Lable: 'Фамилия',
           Value: result.rows[0].last_name,
           Type: 'text',
-          id: 1,
+          id: 'last_name',
         },
         {
           Lable: 'Имя',
           Value: result.rows[0].first_name,
           Type: 'text',
-          id: 2,
+          id: 'first_name',
         },
         {
           Lable: 'Отчество',
           Value: result.rows[0].middle_name,
           Type: 'text',
-          id: 3,
+          id: 'middle_name',
         },
         {
           Lable: 'Телефон',
           Value: result.rows[0].tel,
-          Type: 'text',
-          id: 4,
+          Type: 'tel',
+          id: 'tel',
         },
         {
           Lable: 'Почта',
           Value: result.rows[0].email,
-          Type: 'text',
-          id: 5,
+          Type: 'email',
+          id: 'email',
         },
         {
           Lable: 'Тип',
           Value: result.rows[0].name,
-          Type: 'text',
-          id: 6,
+          Type: 'select',
+          id: 'type_code',
+          // arrSelect: lov,
         },
         {
           Lable: 'Комментарий',
           Value: result.rows[0].comment,
           Type: 'textarea',
-          id: 6,
+          id: 'comment',
         },
       ];
-      res.status(200).json({
-        req: reqData,
+      let seach = `Select * from tr_lov where lov_type = 'CONTACT'`;
+      pool.query(seach, (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(400).json({
+            status: 'Error',
+          });
+        } else {
+          console.log(result.rows);
+          const arr = result.rows;
+          console.log(arr);
+          lov = result.rows;
+          reqData.find((data) => data.id === 'type_code').arrSelect = lov;
+          console.log(reqData);
+          res.status(200).json({
+            status: 'OK',
+            req: reqData,
+          });
+        }
       });
     }
   });

@@ -217,9 +217,37 @@ module.exports.create = function (req, res) {
   });
 };
 
-module.exports.edit = function (req, res) {
-  // console.log(req);
-  res.status(200).json({
-    status: 'OK',
+module.exports.update = function (req, res) {
+  const data = req.body;
+  console.log(data);
+  const updateSet = [];
+  let id;
+  data.forEach((element) => {
+    if (element.id != 'id') {
+      let value = '';
+      if (!!element.Value) {
+        value = element.Value;
+      }
+      updateSet.push(`${element.id} = '${value}'`);
+    } else {
+      id = element.Value;
+    }
+  });
+  const update = `UPDATE TR_CONTACT SET ${updateSet} where id =${id} `;
+  console.log(update);
+
+  pool.query(update, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(200).json({
+        status: 'BAD',
+        error: err,
+        text: 'Привышена длина в поле каком либо поле',
+      });
+    } else {
+      res.status(200).json({
+        status: 'OK',
+      });
+    }
   });
 };

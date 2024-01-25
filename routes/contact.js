@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/getAll', controller.getAll);
 router.post('/create', controller.create);
-router.get('/edit', controller.edit);
+router.post('/update', controller.update);
 router.get('/getLast', controller.getLast);
 router.post('/delete', controller.delete);
 router.get('/getById', controller.getById);

@@ -104,6 +104,9 @@ module.exports.getAll = function (req, res) {
   pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
+      res.status(400).json({
+        req: [err],
+      });
     } else {
       for (let i = 0; i < result.rows.length; i++) {
         const element = result.rows[i];
@@ -119,20 +122,19 @@ module.exports.getAll = function (req, res) {
         ]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
       console.log(brRows);
+      res.status(200).json({
+        req: [
+          {
+            element: 'Header',
+            nameColumn: tableTitle,
+          },
+          {
+            element: 'Body',
+            elements: brRows,
+          },
+        ],
+      });
     }
-
-    res.status(200).json({
-      req: [
-        {
-          element: 'Header',
-          nameColumn: tableTitle,
-        },
-        {
-          element: 'Body',
-          elements: brRows,
-        },
-      ],
-    });
   });
 };
 

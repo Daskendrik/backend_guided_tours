@@ -1,5 +1,33 @@
 const pool = require('../settings/bd');
 
+function GetDataNow() {
+  const now = new Date();
+
+  var dd = now.getDate();
+  if (dd < 10) dd = '0' + dd;
+
+  var mm = now.getMonth() + 1;
+  if (mm < 10) mm = '0' + mm;
+
+  var yy = now.getFullYear() % 100;
+  if (yy < 10) yy = '0' + yy;
+
+  return mm + '/' + dd + '/' + yy;
+}
+
+function FormatData(date) {
+  if (date) {
+    var day = date.getDate();
+    day = day < 10 ? '0' + day : day;
+    var month = date.getMonth() + 1;
+    month = month < 10 ? '0' + month : month;
+    var year = date.getFullYear();
+    return day + '.' + month + '.' + year;
+  }
+}
+
+const dateNow = GetDataNow();
+
 module.exports.getById = function (req, res) {
   const data = req.query;
   const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
@@ -55,7 +83,20 @@ module.exports.getById = function (req, res) {
           Type: 'textarea',
           id: 'comment',
         },
+        {
+          Lable: 'Создан',
+          Value: FormatData(result.rows[0].created),
+          Type: 'data',
+          id: 'created',
+        },
+        {
+          Lable: 'Обновлен',
+          Value: FormatData(result.rows[0].update),
+          Type: 'data',
+          id: 'update',
+        },
       ];
+      console.log(FormatData(result.rows[0].update));
       let seach = `Select * from tr_lov where lov_type = 'CONTACT'`;
       pool.query(seach, (err, result) => {
         if (err) {
@@ -197,15 +238,15 @@ module.exports.create = function (req, res) {
       valuecol.push(`'${element.Value}'`);
     }
   });
+  namecol.push('created', 'update');
+  valuecol.push(`'${dateNow}'`, `'${dateNow}'`);
 
   const insert = `INSERT INTO TR_CONTACT(${namecol}) values (${valuecol})`;
   console.log(insert);
 
   pool.query(insert, (err, result) => {
     if (err) {
-      console.log(1);
       console.log(err);
-      console.log(2);
       res.status(200).json({
         status: 'BAD',
         error: err,
@@ -225,7 +266,11 @@ module.exports.update = function (req, res) {
   const updateSet = [];
   let id;
   data.forEach((element) => {
-    if (element.id != 'id') {
+    if (
+      element.id != 'id' &&
+      element.id != 'created' &&
+      element.id != 'update'
+    ) {
       let value = '';
       if (!!element.Value) {
         value = element.Value;
@@ -235,6 +280,7 @@ module.exports.update = function (req, res) {
       id = element.Value;
     }
   });
+  updateSet.push(`update = '${dateNow}'`);
   const update = `UPDATE TR_CONTACT SET ${updateSet} where id =${id} `;
   console.log(update);
 

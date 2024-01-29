@@ -3,9 +3,8 @@ const controller = require('../controllers/type_lov');
 
 const router = express.Router();
 
-router.get('/get', controller.get);
+router.get('/getAll', controller.getAll);
 router.put('/create', controller.create);
 router.delete('/delete', controller.delete);
-router.get('/getlov', controller.getlov);
 
 module.exports = router;

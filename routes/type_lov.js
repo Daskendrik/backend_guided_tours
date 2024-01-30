@@ -6,5 +6,6 @@ const router = express.Router();
 router.get('/getAll', controller.getAll);
 router.put('/create', controller.create);
 router.delete('/delete', controller.delete);
+router.get('/getById', controller.getById);
 
 module.exports = router;

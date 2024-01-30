@@ -1,88 +1,65 @@
 const pool = require('../settings/bd');
 
-// module.exports.getById = function (req, res) {
-//   const data = req.query;
-//   const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
-//   let reqData = [];
-//   console.log(data);
-//   console.log(seachSpek);
-//   pool.query(seachSpek, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log(result.rows);
-//       reqData = [
-//         {
-//           Lable: 'Фамилия',
-//           Value: result.rows[0].last_name,
-//           Type: 'text',
-//           id: 'last_name',
-//         },
-//         {
-//           Lable: 'Имя',
-//           Value: result.rows[0].first_name,
-//           Type: 'text',
-//           id: 'first_name',
-//         },
-//         {
-//           Lable: 'Отчество',
-//           Value: result.rows[0].middle_name,
-//           Type: 'text',
-//           id: 'middle_name',
-//         },
-//         {
-//           Lable: 'Телефон',
-//           Value: result.rows[0].tel,
-//           Type: 'tel',
-//           id: 'tel',
-//         },
-//         {
-//           Lable: 'Почта',
-//           Value: result.rows[0].email,
-//           Type: 'email',
-//           id: 'email',
-//         },
-//         {
-//           Lable: 'Тип',
-//           Value: result.rows[0].name,
-//           Type: 'select',
-//           id: 'type_code',
-//           // arrSelect: lov,
-//         },
-//         {
-//           Lable: 'Комментарий',
-//           Value: result.rows[0].comment,
-//           Type: 'textarea',
-//           id: 'comment',
-//         },
-//       ];
-//       let seach = `Select * from tr_lov where lov_type = 'CONTACT'`;
-//       pool.query(seach, (err, result) => {
-//         if (err) {
-//           console.log(err);
-//           res.status(400).json({
-//             status: 'Error',
-//           });
-//         } else {
-//           console.log(result.rows);
-//           const arr = result.rows;
-//           console.log(arr);
-//           lov = result.rows;
-//           reqData.find((data) => data.id === 'type_code').arrSelect = lov;
-//           console.log(reqData);
-//           res.status(200).json({
-//             status: 'OK',
-//             req: reqData,
-//           });
-//         }
-//       });
-//     }
-//   });
-// };
+module.exports.getById = function (req, res) {
+  const data = req.query;
+  console.log(data);
+  const seachSpek = `select a.* from tr_lov where a.id = '${data.ID}' `;
+  let reqData = [];
+  console.log(data);
+  console.log(seachSpek);
+  pool.query(seachSpek, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result.rows);
+      reqData = [
+        {
+          Lable: 'ID',
+          Value: result.rows[0].id,
+          Type: 'text',
+          id: 'id',
+        },
+        {
+          Lable: 'Тип справочника',
+          Value: result.rows[0].lov_type,
+          Type: 'text',
+          id: 'lov_type',
+        },
+        {
+          Lable: 'Код',
+          Value: result.rows[0].code,
+          Type: 'text',
+          id: 'code',
+        },
+        {
+          Lable: 'Отображаемое значение',
+          Value: result.rows[0].name,
+          Type: 'text',
+          id: 'name',
+        },
+        {
+          Lable: 'Дата создания',
+          Value: 'будет дата',
+          Type: 'text',
+          id: 'created',
+        },
+        {
+          Lable: 'Дата изменения',
+          Value: 'будет дата',
+          Type: 'text',
+          id: 'update',
+        },
+      ];
+      res.status(200).json({
+        status: 'OK',
+        req: reqData,
+      });
+    }
+  });
+};
 
 module.exports.getAll = function (req, res) {
   const data = req.query;
-  console.log(data);
   const brRows = [];
   const tableTitle = [
     //Заголовок таблиц
@@ -99,7 +76,6 @@ module.exports.getAll = function (req, res) {
   // } else if (data.surname) {
   //   seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
   // }
-  console.log(seachSpek);
   pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
@@ -111,19 +87,69 @@ module.exports.getAll = function (req, res) {
         const element = result.rows[i];
         brRows.push([element.id, element.lov_type, element.code, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
-      console.log(brRows);
-      res.status(200).json({
-        req: [
-          {
-            element: 'Header',
-            nameColumn: tableTitle,
-          },
-          {
-            element: 'Body',
-            elements: brRows,
-          },
-        ],
-      });
+      let firsrRow;
+      pool.query(
+        `select a.* from tr_lov a where id=${brRows[0][0]}`,
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            firsrRow = [
+              {
+                Lable: 'ID',
+                Value: result.rows[0].id,
+                Type: 'text',
+                id: 'id',
+              },
+              {
+                Lable: 'Тип справочника',
+                Value: result.rows[0].lov_type,
+                Type: 'text',
+                id: 'lov_type',
+              },
+              {
+                Lable: 'Код',
+                Value: result.rows[0].code,
+                Type: 'text',
+                id: 'code',
+              },
+              {
+                Lable: 'Отображаемое значение',
+                Value: result.rows[0].name,
+                Type: 'text',
+                id: 'name',
+              },
+              {
+                Lable: 'Дата создания',
+                Value: 'будет дата',
+                Type: 'text',
+                id: 'created',
+              },
+              {
+                Lable: 'Дата изменения',
+                Value: 'будет дата',
+                Type: 'text',
+                id: 'update',
+              },
+            ];
+            result.rows[0];
+            console.log(result.rows[0]);
+            res.status(200).json({
+              req: [
+                {
+                  element: 'Header',
+                  nameColumn: tableTitle,
+                },
+                {
+                  element: 'Body',
+                  elements: brRows,
+                },
+                { element: 'firstRow', elements: firsrRow },
+              ],
+            });
+          }
+        }
+      );
     }
   });
 };

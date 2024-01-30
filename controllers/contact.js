@@ -22,7 +22,7 @@ function FormatData(date) {
     var month = date.getMonth() + 1;
     month = month < 10 ? '0' + month : month;
     var year = date.getFullYear();
-    return day + '.' + month + '.' + year;
+    return year + '-' + month + '-' + day;
   }
 }
 
@@ -86,13 +86,13 @@ module.exports.getById = function (req, res) {
         {
           Lable: 'Создан',
           Value: FormatData(result.rows[0].created),
-          Type: 'data',
+          Type: 'date',
           id: 'created',
         },
         {
           Lable: 'Обновлен',
           Value: FormatData(result.rows[0].update),
-          Type: 'data',
+          Type: 'date',
           id: 'update',
         },
       ];

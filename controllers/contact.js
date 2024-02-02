@@ -1,30 +1,6 @@
 const pool = require('../settings/bd');
-
-function GetDataNow() {
-  const now = new Date();
-
-  var dd = now.getDate();
-  if (dd < 10) dd = '0' + dd;
-
-  var mm = now.getMonth() + 1;
-  if (mm < 10) mm = '0' + mm;
-
-  var yy = now.getFullYear() % 100;
-  if (yy < 10) yy = '0' + yy;
-
-  return mm + '/' + dd + '/' + yy;
-}
-
-function FormatData(date) {
-  if (date) {
-    var day = date.getDate();
-    day = day < 10 ? '0' + day : day;
-    var month = date.getMonth() + 1;
-    month = month < 10 ? '0' + month : month;
-    var year = date.getFullYear();
-    return year + '-' + month + '-' + day;
-  }
-}
+const GetDataNow = require('../Tool/GetDataNow.js');
+const FormatData = require('../Tool/FormatData.js');
 
 const dateNow = GetDataNow();
 
@@ -86,13 +62,13 @@ module.exports.getById = function (req, res) {
         {
           Lable: 'Создан',
           Value: FormatData(result.rows[0].created),
-          Type: 'date',
+          Type: 'data',
           id: 'created',
         },
         {
           Lable: 'Обновлен',
           Value: FormatData(result.rows[0].update),
-          Type: 'date',
+          Type: 'data',
           id: 'update',
         },
       ];

@@ -8,8 +8,7 @@ module.exports.getById = function (req, res) {
   const data = req.query;
   const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
   let reqData = [];
-  console.log(data);
-  console.log(seachSpek);
+  console.log(`Получение контакта по селекту ${seachSpek}`);
   pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
@@ -81,12 +80,9 @@ module.exports.getById = function (req, res) {
             status: 'Error',
           });
         } else {
-          console.log(result.rows);
           const arr = result.rows;
-          console.log(arr);
           lov = result.rows;
           reqData.find((data) => data.id === 'type_code').arrSelect = lov;
-          console.log(reqData);
           res.status(200).json({
             status: 'OK',
             req: reqData,
@@ -127,23 +123,20 @@ module.exports.getAll = function (req, res) {
     } else {
       for (let i = 0; i < result.rows.length; i++) {
         const element = result.rows[i];
-        brRows.push([
-          element.id,
+        let fullName =
           element.last_name +
-            ' ' +
-            element.first_name +
-            ' ' +
-            element.middle_name,
-          element.tel,
-          element.name,
-        ]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
+          ' ' +
+          element.first_name +
+          ' ' +
+          (element.middle_name != null ? element.middle_name : '');
+        brRows.push([element.id, fullName, element.tel, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
       console.log(brRows);
       res.status(200).json({
         req: [
           {
             element: 'Header',
-            nameColumn: tableTitle,
+            elements: tableTitle,
           },
           {
             element: 'Body',

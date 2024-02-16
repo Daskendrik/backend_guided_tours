@@ -4,6 +4,7 @@ const FormatData = require('../Tool/FormatData.js');
 
 const dateNow = GetDataNow();
 
+//поиск контакта по ID
 module.exports.getById = function (req, res) {
   const data = req.query;
   const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
@@ -92,7 +93,7 @@ module.exports.getById = function (req, res) {
     }
   });
 };
-
+//Поиск всех контактов
 module.exports.getAll = function (req, res) {
   const data = req.query;
   console.log(data);
@@ -147,7 +148,7 @@ module.exports.getAll = function (req, res) {
     }
   });
 };
-
+//Получение айдишника последнего созданного контакта
 module.exports.getLast = function (req, res) {
   let lastId;
   let lov;
@@ -178,7 +179,7 @@ module.exports.getLast = function (req, res) {
     });
   });
 };
-
+//удаление контакта
 module.exports.delete = function (req, res) {
   console.log('delete');
   const data = req.body;
@@ -195,7 +196,7 @@ module.exports.delete = function (req, res) {
     });
   });
 };
-
+//создание конакта
 module.exports.create = function (req, res) {
   const data = req.body;
   console.log(data);
@@ -228,7 +229,7 @@ module.exports.create = function (req, res) {
     }
   });
 };
-
+//Обновление данных
 module.exports.update = function (req, res) {
   const data = req.body;
   console.log(data);

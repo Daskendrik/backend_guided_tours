@@ -1,4 +1,4 @@
-import { pool } from '../settings/bd.js';
+import { pool } from '../settings/db.js';
 import { GetDataNow } from '../Tool/GetDataNow.js';
 import { FormatData } from '../Tool/FormatData.js';
 
@@ -105,8 +105,7 @@ export function getAll(req, res) {
     { title: 'Телефон', id: 'tel' },
     { title: 'Тип', id: 'type' },
   ];
-  let seachSpek =
-    'select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code order by id';
+  let seachSpek = 'select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code order by id';
   if (data.phone && data.surname) {
     seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.tel = '${data.phone}' AND a.last_name = '${data.surname}' order by id`;
   } else if (data.phone) {
@@ -125,11 +124,7 @@ export function getAll(req, res) {
       for (let i = 0; i < result.rows.length; i++) {
         const element = result.rows[i];
         let fullName =
-          element.last_name +
-          ' ' +
-          element.first_name +
-          ' ' +
-          (element.middle_name != null ? element.middle_name : '');
+          element.last_name + ' ' + element.first_name + ' ' + (element.middle_name != null ? element.middle_name : '');
         brRows.push([element.id, fullName, element.tel, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
       console.log(brRows);
@@ -237,11 +232,7 @@ export function update(req, res) {
   const updateSet = [];
   let id;
   data.forEach((element) => {
-    if (
-      element.id != 'id' &&
-      element.id != 'created' &&
-      element.id != 'update'
-    ) {
+    if (element.id != 'id' && element.id != 'created' && element.id != 'update') {
       let value = '';
       if (!!element.Value) {
         value = element.Value;

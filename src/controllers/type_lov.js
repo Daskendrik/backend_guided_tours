@@ -1,4 +1,4 @@
-import { pool } from '../settings/bd.js';
+import { pool } from '../settings/db.js';
 
 export function getById(req, res) {
   const data = req.query;
@@ -88,68 +88,65 @@ export function getAll(req, res) {
         brRows.push([element.id, element.lov_type, element.code, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
       let firsrRow;
-      pool.query(
-        `select a.* from tr_lov a where id=${brRows[0][0]}`,
-        (err, result) => {
-          if (err) {
-            console.log(err);
-          } else {
-            firsrRow = [
+      pool.query(`select a.* from tr_lov a where id=${brRows[0][0]}`, (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          firsrRow = [
+            {
+              Lable: 'ID',
+              Value: result.rows[0].id,
+              Type: 'text',
+              id: 'id',
+            },
+            {
+              Lable: 'Тип справочника',
+              Value: result.rows[0].lov_type,
+              Type: 'text',
+              id: 'lov_type',
+            },
+            {
+              Lable: 'Код',
+              Value: result.rows[0].code,
+              Type: 'text',
+              id: 'code',
+            },
+            {
+              Lable: 'Отображаемое значение',
+              Value: result.rows[0].name,
+              Type: 'text',
+              id: 'name',
+            },
+            {
+              Lable: 'Дата создания',
+              Value: 'будет дата',
+              Type: 'text',
+              id: 'created',
+            },
+            {
+              Lable: 'Дата изменения',
+              Value: 'будет дата',
+              Type: 'text',
+              id: 'update',
+            },
+          ];
+          result.rows[0];
+          console.log(result.rows[0]);
+          res.status(200).json({
+            req: [
               {
-                Lable: 'ID',
-                Value: result.rows[0].id,
-                Type: 'text',
-                id: 'id',
+                element: 'Header',
+                nameColumn: tableTitle,
               },
               {
-                Lable: 'Тип справочника',
-                Value: result.rows[0].lov_type,
-                Type: 'text',
-                id: 'lov_type',
+                element: 'Body',
+                elements: brRows,
               },
-              {
-                Lable: 'Код',
-                Value: result.rows[0].code,
-                Type: 'text',
-                id: 'code',
-              },
-              {
-                Lable: 'Отображаемое значение',
-                Value: result.rows[0].name,
-                Type: 'text',
-                id: 'name',
-              },
-              {
-                Lable: 'Дата создания',
-                Value: 'будет дата',
-                Type: 'text',
-                id: 'created',
-              },
-              {
-                Lable: 'Дата изменения',
-                Value: 'будет дата',
-                Type: 'text',
-                id: 'update',
-              },
-            ];
-            result.rows[0];
-            console.log(result.rows[0]);
-            res.status(200).json({
-              req: [
-                {
-                  element: 'Header',
-                  nameColumn: tableTitle,
-                },
-                {
-                  element: 'Body',
-                  elements: brRows,
-                },
-                { element: 'firstRow', elements: firsrRow },
-              ],
-            });
-          }
+              { element: 'firstRow', elements: firsrRow },
+            ],
+          });
         }
-      );
+      });
     }
   });
 }

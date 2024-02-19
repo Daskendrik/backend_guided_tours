@@ -1,4 +1,4 @@
-import { pool } from '../settings/bd.js';
+import { pool } from '../settings/db.js';
 
 export function allCompanyBus(req, res) {
   const brRows = [];

@@ -1,11 +1,11 @@
-const pool = require('../settings/bd');
-const GetDataNow = require('../Tool/GetDataNow.js');
-const FormatData = require('../Tool/FormatData.js');
+import { pool } from '../settings/bd.js';
+import { GetDataNow } from '../Tool/GetDataNow.js';
+import { FormatData } from '../Tool/FormatData.js';
 
 const dateNow = GetDataNow();
 
 //поиск контакта по ID
-module.exports.getById = function (req, res) {
+export function getById(req, res) {
   const data = req.query;
   const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
   let reqData = [];
@@ -92,9 +92,9 @@ module.exports.getById = function (req, res) {
       });
     }
   });
-};
+}
 //Поиск всех контактов
-module.exports.getAll = function (req, res) {
+export function getAll(req, res) {
   const data = req.query;
   console.log(data);
   const brRows = [];
@@ -147,9 +147,9 @@ module.exports.getAll = function (req, res) {
       });
     }
   });
-};
+}
 //Получение айдишника последнего созданного контакта
-module.exports.getLast = function (req, res) {
+export function getLast(req, res) {
   let lastId;
   let lov;
   console.log(req);
@@ -178,9 +178,9 @@ module.exports.getLast = function (req, res) {
       }
     });
   });
-};
+}
 //удаление контакта
-module.exports.delete = function (req, res) {
+const _delete = function (req, res) {
   console.log('delete');
   const data = req.body;
   console.log(data);
@@ -196,8 +196,9 @@ module.exports.delete = function (req, res) {
     });
   });
 };
+export { _delete as delete };
 //создание конакта
-module.exports.create = function (req, res) {
+export function create(req, res) {
   const data = req.body;
   console.log(data);
   const namecol = [];
@@ -228,9 +229,9 @@ module.exports.create = function (req, res) {
       });
     }
   });
-};
+}
 //Обновление данных
-module.exports.update = function (req, res) {
+export function update(req, res) {
   const data = req.body;
   console.log(data);
   const updateSet = [];
@@ -268,4 +269,4 @@ module.exports.update = function (req, res) {
       });
     }
   });
-};
+}

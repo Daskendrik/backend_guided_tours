@@ -1,14 +1,14 @@
-const express = require('express');
-const path = require('path');
+import express, { json } from 'express';
+import path from 'path';
 
-const busesRoutes = require('./routes/buses');
-const companyBus = require('./routes/company_bus');
-const typeLov = require('./routes/type_lov');
-const contact = require('./routes/contact');
+import { busesRoutes } from './routes/buses.js';
+import { companyBus } from './routes/company_bus.js';
+import { typeLov } from './routes/type_lov.js';
+import { contact } from './routes/contact.js';
 // создаем объект приложения
 const app = express();
-app.use(express.json());
-app.use(express.static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
+app.use(json());
+//app.use(static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
 //адреса в индексе должны быть /static/css/main.a31be556.css
 
 app.use(function (req, res, next) {

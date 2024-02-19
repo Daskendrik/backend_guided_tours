@@ -1,4 +1,4 @@
-function FormatData(date) {
+export function FormatData(date) {
   if (date) {
     var day = date.getDate();
     day = day < 10 ? '0' + day : day;
@@ -8,5 +8,3 @@ function FormatData(date) {
     return day + '.' + month + '.' + year;
   }
 }
-
-module.exports = FormatData;

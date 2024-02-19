@@ -1,8 +1,6 @@
-const pool = require('../settings/bd');
-
-module.exports.getAllbus = function (req, res) {
+export function getAllbus(req, res) {
   const brRows = [];
-  pool.query('SELECT * from TR_BUSES', (err, result) => {
+  query('SELECT * from TR_BUSES', (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -31,9 +29,9 @@ module.exports.getAllbus = function (req, res) {
       ],
     });
   });
-};
+}
 
-module.exports.createBus = function (req, res) {
+export function createBus(req, res) {
   const data = req.query;
   console.log(data);
   res.status(200).json({
@@ -41,9 +39,9 @@ module.exports.createBus = function (req, res) {
     errorText: 'Все нормал',
     id: '12asdsaf',
   });
-};
+}
 
-module.exports.deleteBus = function (req, res) {
+export function deleteBus(req, res) {
   console.log(req.query);
   console.log(req.query.targetRow);
   res.status(200).json({
@@ -51,4 +49,4 @@ module.exports.deleteBus = function (req, res) {
     errorText: '',
     comment: `Была удалена запись с id = ${req.query.targetRow}`,
   });
-};
+}

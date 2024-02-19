@@ -1,4 +1,4 @@
-function GetDataNow() {
+export function GetDataNow() {
   const now = new Date();
 
   var dd = now.getDate();
@@ -12,5 +12,3 @@ function GetDataNow() {
 
   return mm + '/' + dd + '/' + yy;
 }
-
-module.exports = GetDataNow;

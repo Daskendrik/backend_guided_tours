@@ -1,8 +1,8 @@
-const pool = require('../settings/bd');
+import { pool } from '../settings/bd.js';
 
-module.exports.allCompanyBus = function (req, res) {
+export function allCompanyBus(req, res) {
   const brRows = [];
-  pool.query('SELECT * from TR_COMPANY_BUS', (err, result) => {
+  pool('SELECT * from TR_COMPANY_BUS', (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -33,18 +33,18 @@ module.exports.allCompanyBus = function (req, res) {
       res.status(400);
     }
   });
-};
+}
 
-module.exports.createCompanyBus = function (req, res) {
+export function createCompanyBus(req, res) {
   // console.log(req);
   res.status(200).json({
     status: 'OK',
     errorText: 'Все нормал',
     id: '12asdsaf',
   });
-};
+}
 
-module.exports.deleteCompanyBus = function (req, res) {
+export function deleteCompanyBus(req, res) {
   console.log(req.query);
   console.log(req.query.targetRow);
   res.status(200).json({
@@ -52,4 +52,4 @@ module.exports.deleteCompanyBus = function (req, res) {
     errorText: '',
     comment: `Была удалена запись с id = ${req.query.targetRow}`,
   });
-};
+}

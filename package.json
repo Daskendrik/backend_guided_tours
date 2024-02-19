@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "npx nodemon",
+    "build": "rimraf ./build && npx tsc",
+    "start": "npm run build && node build/main",
+    "lint": "npx eslint ./src",
+    "format": "npx eslint ./src --fix"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +22,20 @@
     "apollo-server": "^3.13.0",
     "axios": "^1.6.2",
     "dotenv": "^16.3.1",
+    "eslint": "^8.56.0",
     "express": "^4.18.2",
     "graphql": "^16.8.1",
-    "nodemon": "^3.0.1",
-    "pg": "^8.11.3"
+    "husky": "^9.0.11",
+    "pg": "^8.11.3",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/pg": "^8.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "nodemon": "^3.0.3",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
   }
 }

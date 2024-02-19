@@ -1,6 +1,6 @@
-const pool = require('../settings/bd');
+import { pool } from '../settings/bd.js';
 
-module.exports.getById = function (req, res) {
+export function getById(req, res) {
   const data = req.query;
   console.log(data);
   const seachSpek = `select a.* from tr_lov where a.id = '${data.ID}' `;
@@ -56,9 +56,9 @@ module.exports.getById = function (req, res) {
       });
     }
   });
-};
+}
 
-module.exports.getAll = function (req, res) {
+export function getAll(req, res) {
   const data = req.query;
   const brRows = [];
   const tableTitle = [
@@ -152,9 +152,9 @@ module.exports.getAll = function (req, res) {
       );
     }
   });
-};
+}
 
-module.exports.getLast = function (req, res) {
+export function getLast(req, res) {
   let lastId;
   let lov;
   console.log(req);
@@ -183,9 +183,9 @@ module.exports.getLast = function (req, res) {
       }
     });
   });
-};
+}
 
-module.exports.delete = function (req, res) {
+export function deleteRow(req, res) {
   console.log('delete');
   const data = req.body;
   console.log(data);
@@ -200,9 +200,8 @@ module.exports.delete = function (req, res) {
       status: 'OK',
     });
   });
-};
-
-module.exports.create = function (req, res) {
+}
+export function create(req, res) {
   const data = req.body;
   console.log(data);
   const namecol = [];
@@ -233,9 +232,9 @@ module.exports.create = function (req, res) {
       });
     }
   });
-};
+}
 
-module.exports.update = function (req, res) {
+export function update(req, res) {
   const data = req.body;
   console.log(data);
   const updateSet = [];
@@ -268,4 +267,4 @@ module.exports.update = function (req, res) {
       });
     }
   });
-};
+}

@@ -3,7 +3,7 @@ const { Pool } = pg;
 require('dotenv').config();
 
 const objection = require('objection');
-Model = objection.Model;
+export const Model = objection.Model;
 
 const knex = require('knex')({
   client: 'pg',

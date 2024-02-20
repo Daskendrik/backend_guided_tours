@@ -1,23 +1,16 @@
-export type Contact = {
-  id: FieldApplet;
-  last_name: FieldApplet;
-  first_name: FieldApplet;
-  middle_name?: FieldApplet;
-  tel?: FieldApplet;
-  email?: FieldApplet;
-  type_code?: string[];
-  comment?: FieldApplet;
-  created: FieldApplet;
-  update: FieldApplet;
+export type IContact = {
+  id: string; //айдишник
+  last_name?: string; //фамилия
+  first_name?: string; //имя
+  middle_name?: string; //отчество
+  full_name?: string;
+  tel?: string; //телефон
+  email?: string; //почта
+  type_code?: string[]; //коды для типа
+  comment?: string; //коммент
+  created?: string; //срздан
+  update?: string; //обновлен
+  lov_type?: string; //тип
 };
 
-type FieldApplet = {
-  Lable: string;
-  Value: any;
-  Type: string;
-  id: string;
-  required?: boolean;
-  readonly?: boolean;
-  change?: any;
-  arrSelect?: string[];
-};
+export type IallContacts = IContact[];

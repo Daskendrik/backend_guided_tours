@@ -5,10 +5,19 @@ import { FormatData } from '../Tool/FormatData.js';
 const dateNow = GetDataNow();
 
 //поиск контакта по ID
-export function getById(req, res) {
+export function getById(
+  req: { query: any },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { status: string; req?: any[] }): void; new (): any };
+    };
+  },
+) {
   const data = req.query;
   const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
-  let reqData = [];
+  let reqData: any[] = [];
   console.log(`Получение контакта по селекту ${seachSpek}`);
   pool.query(seachSpek, (err, result) => {
     if (err) {
@@ -82,7 +91,7 @@ export function getById(req, res) {
           });
         } else {
           const arr = result.rows;
-          lov = result.rows;
+          const lov = result.rows;
           reqData.find((data) => data.id === 'type_code').arrSelect = lov;
           res.status(200).json({
             status: 'OK',
@@ -94,10 +103,28 @@ export function getById(req, res) {
   });
 }
 //Поиск всех контактов
-export function getAll(req, res) {
+export async function getAll(
+  req: { query: any },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: {
+        (arg0: {
+          req:
+            | Error[]
+            | (
+                | { element: string; elements: { title: string; id: string }[] }
+                | { element: string; elements: any[][] }
+              )[];
+        }): void;
+        new (): any;
+      };
+    };
+  },
+) {
   const data = req.query;
-  console.log(data);
-  const brRows = [];
+  const brRows: any[][] = [];
   const tableTitle = [
     //Заголовок таблиц
     { title: 'Id', id: 'Id' },
@@ -113,10 +140,8 @@ export function getAll(req, res) {
   } else if (data.surname) {
     seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
   }
-  console.log(seachSpek);
   pool.query(seachSpek, (err, result) => {
     if (err) {
-      console.log(err);
       res.status(400).json({
         req: [err],
       });
@@ -127,7 +152,6 @@ export function getAll(req, res) {
           element.last_name + ' ' + element.first_name + ' ' + (element.middle_name != null ? element.middle_name : '');
         brRows.push([element.id, fullName, element.tel, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
       }
-      console.log(brRows);
       res.status(200).json({
         req: [
           {
@@ -144,27 +168,31 @@ export function getAll(req, res) {
   });
 }
 //Получение айдишника последнего созданного контакта
-export function getLast(req, res) {
-  let lastId;
+export function getLast(
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { status: string; req?: any[] }): void; new (): any };
+    };
+  },
+) {
+  let lastId: any;
   let lov;
-  console.log(req);
-  seachSpek = 'SELECT MAX(ID) FROM TR_CONTACT';
+  const seachSpek = 'SELECT MAX(ID) FROM TR_CONTACT';
   pool.query(seachSpek, (err, result) => {
     if (err) {
       console.log(err);
     } else lastId = result.rows[0].max;
-    console.log('getlov');
     const seach = `Select * from tr_lov where lov_type = 'CONTACT'`;
     pool.query(seach, (err, result) => {
       if (err) {
-        console.log(err);
         res.status(400).json({
           status: 'Error',
         });
       } else {
-        console.log(result.rows);
         const arr = result.rows;
-        console.log(arr);
         lov = result.rows;
         res.status(200).json({
           status: 'OK',
@@ -175,7 +203,10 @@ export function getLast(req, res) {
   });
 }
 //удаление контакта
-const _delete = function (req, res) {
+const _delete = function (
+  req: { body: any },
+  res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: { status: string }): void; new (): any } } },
+) {
   console.log('delete');
   const data = req.body;
   console.log(data);
@@ -193,12 +224,21 @@ const _delete = function (req, res) {
 };
 export { _delete as delete };
 //создание конакта
-export function create(req, res) {
+export function create(
+  req: { body: any },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { status: string; error?: Error; text?: string }): void; new (): any };
+    };
+  },
+) {
   const data = req.body;
   console.log(data);
   const namecol = [];
   const valuecol = [];
-  data.forEach((element) => {
+  data.forEach((element: { Value: any; id: any }) => {
     if (element.Value) {
       namecol.push(element.id);
       valuecol.push(`'${element.Value}'`);
@@ -226,12 +266,21 @@ export function create(req, res) {
   });
 }
 //Обновление данных
-export function update(req, res) {
+export function update(
+  req: { body: any },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { status: string; error?: Error; text?: string }): void; new (): any };
+    };
+  },
+) {
   const data = req.body;
   console.log(data);
   const updateSet = [];
   let id;
-  data.forEach((element) => {
+  data.forEach((element: { id: string; Value: string }) => {
     if (element.id != 'id' && element.id != 'created' && element.id != 'update') {
       let value = '';
       if (!!element.Value) {

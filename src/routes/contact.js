@@ -1,11 +1,5 @@
 import { Router } from 'express';
-import {
-  getAll,
-  create,
-  update,
-  getLast,
-  getById,
-} from '../controllers/contact.js';
+import { getAll, create, update, getLast, getById } from '../controllers/contact.ts';
 
 export const contact = Router();
 

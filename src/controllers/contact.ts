@@ -1,6 +1,7 @@
 import { pool } from '../settings/db.js';
 import { GetDataNow } from '../Tool/GetDataNow.js';
 import { FormatData } from '../Tool/FormatData.js';
+import { Contact } from '../models/Contact.js';
 
 const dateNow = GetDataNow();
 
@@ -113,10 +114,7 @@ export async function getAll(
         (arg0: {
           req:
             | Error[]
-            | (
-                | { element: string; elements: { title: string; id: string }[] }
-                | { element: string; elements: any[][] }
-              )[];
+            | ({ element: string; elements: { title: string; id: string }[] } | { element: string; elements: any })[];
         }): void;
         new (): any;
       };
@@ -127,8 +125,8 @@ export async function getAll(
   const brRows: any[][] = [];
   const tableTitle = [
     //Заголовок таблиц
-    { title: 'Id', id: 'Id' },
-    { title: 'ФИО', id: 'name' },
+    { title: 'Id', id: 'id' },
+    { title: 'ФИО', id: 'full_name' },
     { title: 'Телефон', id: 'tel' },
     { title: 'Тип', id: 'type' },
   ];
@@ -140,32 +138,58 @@ export async function getAll(
   } else if (data.surname) {
     seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
   }
-  pool.query(seachSpek, (err, result) => {
-    if (err) {
-      res.status(400).json({
-        req: [err],
-      });
-    } else {
-      for (let i = 0; i < result.rows.length; i++) {
-        const element = result.rows[i];
-        let fullName =
-          element.last_name + ' ' + element.first_name + ' ' + (element.middle_name != null ? element.middle_name : '');
-        brRows.push([element.id, fullName, element.tel, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
-      }
-      res.status(200).json({
-        req: [
-          {
-            element: 'Header',
-            elements: tableTitle,
-          },
-          {
-            element: 'Body',
-            elements: brRows,
-          },
-        ],
-      });
-    }
-  });
+  // pool.query(seachSpek, (err, result) => {
+  //   if (err) {
+  //     res.status(400).json({
+  //       req: [err],
+  //     });
+  //   } else {
+  //     for (let i = 0; i < result.rows.length; i++) {
+  //       const element = result.rows[i];
+  //       let fullName =
+  //         element.last_name + ' ' + element.first_name + ' ' + (element.middle_name != null ? element.middle_name : '');
+  //       brRows.push([element.id, fullName, element.tel, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
+  //     }
+  //     res.status(200).json({
+  //       req: [
+  //         {
+  //           element: 'Header',
+  //           elements: tableTitle,
+  //         },
+  //         {
+  //           element: 'Body',
+  //           elements: brRows,
+  //         },
+  //       ],
+  //     });
+  //   }
+  // });
+  try {
+    const allContact = await Contact.query()
+      .select('tr_contact.*', 'lov.name as type')
+      .leftJoinRelated('lov')
+      .orderBy('id');
+    allContact.map((contact) => {
+      contact.full_name = contact.fullName();
+    });
+    res.status(200).json({
+      req: [
+        {
+          element: 'Header',
+          elements: tableTitle,
+        },
+        {
+          element: 'Body',
+          elements: allContact,
+        },
+      ],
+    });
+  } catch (error) {
+    const err = Error('Ошибка');
+    res.status(400).json({
+      req: [err],
+    });
+  }
 }
 //Получение айдишника последнего созданного контакта
 export function getLast(
@@ -203,7 +227,7 @@ export function getLast(
   });
 }
 //удаление контакта
-const _delete = function (
+export function deleteRow(
   req: { body: any },
   res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: { status: string }): void; new (): any } } },
 ) {
@@ -221,8 +245,8 @@ const _delete = function (
       status: 'OK',
     });
   });
-};
-export { _delete as delete };
+}
+
 //создание конакта
 export function create(
   req: { body: any },

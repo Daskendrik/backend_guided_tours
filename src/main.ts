@@ -1,5 +1,6 @@
 import express, { json } from 'express';
 import path from 'path';
+import cors from 'cors';
 
 import { busesRoutes } from './routes/buses.js';
 import { companyBus } from './routes/company_bus.js';
@@ -10,7 +11,7 @@ const app = express();
 app.use(json());
 //app.use(static(__dirname + '/build')); //добавлено, чтобы приложение понимало в какой директиве работает
 //адреса в индексе должны быть /static/css/main.a31be556.css
-
+// app.use(cors());
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -18,7 +19,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-//localhost:3000/api/
+//localhost:3001/api/
 app.use('/api/buses', busesRoutes);
 app.use('/api/company_bus', companyBus);
 app.use('/api/type_lov', typeLov);

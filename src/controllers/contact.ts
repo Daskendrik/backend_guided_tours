@@ -2,6 +2,9 @@ import { pool } from '../settings/db.js';
 import { GetDataNow } from '../Tool/GetDataNow.js';
 import { FormatData } from '../Tool/FormatData.js';
 import { Contact } from '../models/Contact.js';
+import { title } from 'process';
+import { LOVTitle } from '../Tool/LOVTitle.js';
+import { TitleField } from '../Types/Fields.js';
 
 const dateNow = GetDataNow();
 
@@ -123,13 +126,17 @@ export async function getAll(
 ) {
   const data = req.query;
   const brRows: any[][] = [];
-  const tableTitle = [
+  const tableTitle: any = [
     //Заголовок таблиц
-    { title: 'Id', id: 'id' },
-    { title: 'ФИО', id: 'full_name' },
-    { title: 'Телефон', id: 'tel' },
-    { title: 'Тип', id: 'type' },
+    { id: 'id' },
+    { id: 'full_name' },
+    { id: 'tel' },
+    { id: 'type' },
   ];
+  tableTitle.map((titleCode: { title: any; id: string }) => {
+    const id: string = titleCode.id;
+    titleCode.title = LOVTitle[id];
+  });
   let seachSpek = 'select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code order by id';
   if (data.phone && data.surname) {
     seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.tel = '${data.phone}' AND a.last_name = '${data.surname}' order by id`;
@@ -138,32 +145,7 @@ export async function getAll(
   } else if (data.surname) {
     seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
   }
-  // pool.query(seachSpek, (err, result) => {
-  //   if (err) {
-  //     res.status(400).json({
-  //       req: [err],
-  //     });
-  //   } else {
-  //     for (let i = 0; i < result.rows.length; i++) {
-  //       const element = result.rows[i];
-  //       let fullName =
-  //         element.last_name + ' ' + element.first_name + ' ' + (element.middle_name != null ? element.middle_name : '');
-  //       brRows.push([element.id, fullName, element.tel, element.name]); //Тут меняем поля, последовательсть надо сохранять, как у загловка таблиц
-  //     }
-  //     res.status(200).json({
-  //       req: [
-  //         {
-  //           element: 'Header',
-  //           elements: tableTitle,
-  //         },
-  //         {
-  //           element: 'Body',
-  //           elements: brRows,
-  //         },
-  //       ],
-  //     });
-  //   }
-  // });
+
   try {
     const allContact = await Contact.query()
       .select('tr_contact.*', 'lov.name as type')

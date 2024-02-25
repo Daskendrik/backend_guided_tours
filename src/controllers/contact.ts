@@ -125,7 +125,6 @@ export async function getAll(
   },
 ) {
   const data = req.query;
-  const brRows: any[][] = [];
   const tableTitle: any = [
     //Заголовок таблиц
     { id: 'id' },
@@ -137,23 +136,39 @@ export async function getAll(
     const id: string = titleCode.id;
     titleCode.title = LOVTitle[id];
   });
-  let seachSpek = 'select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code order by id';
-  if (data.phone && data.surname) {
-    seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.tel = '${data.phone}' AND a.last_name = '${data.surname}' order by id`;
-  } else if (data.phone) {
-    seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.tel = '${data.phone}' order by id`;
-  } else if (data.surname) {
-    seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.last_name = '${data.surname}' order by id`;
-  }
-
+  let allContact;
   try {
-    const allContact = await Contact.query()
-      .select('tr_contact.*', 'lov.name as type')
-      .leftJoinRelated('lov')
-      .orderBy('id');
-    allContact.map((contact) => {
-      contact.full_name = contact.fullName();
-    });
+    if (data.phone && data.surname) {
+      allContact = await Contact.query()
+        .select('tr_contact.*', 'lov.name as type')
+        .leftJoinRelated('lov')
+        .where('tel', data.phone)
+        .where('last_name', data.surname)
+        .orderBy('id');
+    } else if (data.phone) {
+      allContact = await Contact.query()
+        .select('tr_contact.*', 'lov.name as type')
+        .leftJoinRelated('lov')
+        .where('tel', data.phone)
+        .orderBy('id');
+    } else if (data.surname) {
+      allContact = await Contact.query()
+        .select('tr_contact.*', 'lov.name as type')
+        .leftJoinRelated('lov')
+        .where('last_name', data.surname)
+        .orderBy('id');
+    } else {
+      allContact = await Contact.query()
+        .select('tr_contact.*', 'lov.name as type')
+        .leftJoinRelated('lov')
+        .orderBy('id');
+    }
+    if (allContact) {
+      allContact.map((contact) => {
+        contact.full_name = contact.fullName();
+      });
+    }
+
     res.status(200).json({
       req: [
         {

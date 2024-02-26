@@ -4,7 +4,7 @@ import { FormatData } from '../Tool/FormatData.js';
 import { Contact } from '../models/Contact.js';
 import { title } from 'process';
 import { LOVTitle } from '../Tool/LOVTitle.js';
-import { TitleFieldsTable } from '../Types/Fields.js';
+import { TitleFieldsForm, TitleFieldsTable } from '../Types/Fields.js';
 import { LOV } from '../models/LOV.js';
 
 const dateNow = GetDataNow();
@@ -21,7 +21,7 @@ export async function getById(
   },
 ) {
   const data = req.query;
-  let reqData: any[] = [];
+  let reqData: TitleFieldsForm;
   try {
     const contactById: any = await Contact.query()
       .findById(data.ID)
@@ -32,58 +32,58 @@ export async function getById(
     console.log(lov);
     reqData = [
       {
-        Lable: 'Фамилия',
-        Value: contactById.last_name,
-        Type: 'text',
+        lable: 'Фамилия',
+        value: contactById.last_name,
+        type: 'text',
         id: 'last_name',
       },
       {
-        Lable: 'Имя',
-        Value: contactById.first_name,
-        Type: 'text',
+        lable: 'Имя',
+        value: contactById.first_name,
+        type: 'text',
         id: 'first_name',
       },
       {
-        Lable: 'Отчество',
-        Value: contactById.middle_name,
-        Type: 'text',
+        lable: 'Отчество',
+        value: contactById.middle_name,
+        type: 'text',
         id: 'middle_name',
       },
       {
-        Lable: 'Телефон',
-        Value: contactById.tel,
-        Type: 'tel',
+        lable: 'Телефон',
+        value: contactById.tel,
+        type: 'tel',
         id: 'tel',
       },
       {
-        Lable: 'Почта',
-        Value: contactById.email,
-        Type: 'email',
+        lable: 'Почта',
+        value: contactById.email,
+        type: 'email',
         id: 'email',
       },
       {
-        Lable: 'Тип',
-        Value: contactById.type,
-        Type: 'select',
+        lable: 'Тип',
+        value: contactById.type,
+        type: 'select',
         id: 'type_code',
         arrSelect: lov,
       },
       {
-        Lable: 'Комментарий',
-        Value: contactById.comment,
-        Type: 'textarea',
+        lable: 'Комментарий',
+        value: contactById.comment,
+        type: 'textarea',
         id: 'comment',
       },
       {
-        Lable: 'Создан',
-        Value: FormatData(contactById.created),
-        Type: 'data',
+        lable: 'Создан',
+        value: FormatData(contactById.created),
+        type: 'data',
         id: 'created',
       },
       {
-        Lable: 'Обновлен',
-        Value: FormatData(contactById.update),
-        Type: 'data',
+        lable: 'Обновлен',
+        value: FormatData(contactById.update),
+        type: 'data',
         id: 'update',
       },
     ];
@@ -289,48 +289,42 @@ export function create(
     }
   });
 }
-//Обновление данных
-export function update(
+//Обновление данных +
+export async function update(
   req: { body: any },
   res: {
     status: (arg0: number) => {
       (): any;
       new (): any;
-      json: { (arg0: { status: string; error?: Error; text?: string }): void; new (): any };
+      json: { (arg0: { status: string; req?: Error[] }): void; new (): any };
     };
   },
 ) {
   const data = req.body;
-  console.log(data);
-  const updateSet = [];
-  let id;
-  data.forEach((element: { id: string; Value: string }) => {
+  let id: any;
+  const newUpdateSet: any = new Object();
+  newUpdateSet.update = dateNow;
+  data.forEach((element: { id: string; value: string }) => {
     if (element.id != 'id' && element.id != 'created' && element.id != 'update') {
       let value = '';
-      if (!!element.Value) {
-        value = element.Value;
+      if (!!element.value) {
+        value = element.value;
       }
-      updateSet.push(`${element.id} = '${value}'`);
-    } else {
-      id = element.Value;
+      newUpdateSet[element.id] = element.value;
+    } else if (element.id === 'id') {
+      id = element.value;
     }
   });
-  updateSet.push(`update = '${dateNow}'`);
-  const update = `UPDATE TR_CONTACT SET ${updateSet} where id =${id} `;
-  console.log(update);
-
-  pool.query(update, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(200).json({
-        status: 'BAD',
-        error: err,
-        text: 'Привышена длина в поле каком либо поле',
-      });
-    } else {
-      res.status(200).json({
-        status: 'OK',
-      });
-    }
-  });
+  try {
+    const updateContact = await Contact.query().update(newUpdateSet).where('id', id);
+    res.status(200).json({
+      status: 'OK',
+    });
+  } catch (error) {
+    const err = Error('Ошибка');
+    res.status(400).json({
+      req: [err],
+      status: 'Error',
+    });
+  }
 }

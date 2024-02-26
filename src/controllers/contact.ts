@@ -106,7 +106,7 @@ export function getById(
     }
   });
 }
-//Поиск всех контактов
+//Поиск всех контактов +
 export async function getAll(
   req: { query: any },
   res: {
@@ -223,25 +223,30 @@ export function getLast(
     });
   });
 }
-//удаление контакта
-export function deleteRow(
+//удаление контакта +
+export async function deleteRow(
   req: { body: any },
-  res: { status: (arg0: number) => { (): any; new (): any; json: { (arg0: { status: string }): void; new (): any } } },
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: { status?: string; req: Error[] | number[] }): void; new (): any };
+    };
+  },
 ) {
-  console.log('delete');
   const data = req.body;
-  console.log(data);
-  const del = `Delete FROM TR_CONTACT WHERE ID=${data.targetRow}`;
-  pool.query(del, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result);
-    }
+  try {
+    const result = await Contact.query().deleteById(data.targetRow);
     res.status(200).json({
       status: 'OK',
+      req: [result],
     });
-  });
+  } catch (error) {
+    const err = Error('Ошибка');
+    res.status(400).json({
+      req: [err],
+    });
+  }
 }
 
 //создание конакта

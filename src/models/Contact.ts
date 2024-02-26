@@ -33,6 +33,8 @@ export class Contact extends Model {
       },
     },
   };
+
+  //Функции
   fullName() {
     return this.first_name + ' ' + this.last_name + ' ' + (this.middle_name || '');
   }

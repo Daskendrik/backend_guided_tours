@@ -4,12 +4,13 @@ import { FormatData } from '../Tool/FormatData.js';
 import { Contact } from '../models/Contact.js';
 import { title } from 'process';
 import { LOVTitle } from '../Tool/LOVTitle.js';
-import { TitleField } from '../Types/Fields.js';
+import { TitleFieldsTable } from '../Types/Fields.js';
+import { LOV } from '../models/LOV.js';
 
 const dateNow = GetDataNow();
 
-//поиск контакта по ID
-export function getById(
+//поиск контакта по ID +
+export async function getById(
   req: { query: any },
   res: {
     status: (arg0: number) => {
@@ -20,91 +21,84 @@ export function getById(
   },
 ) {
   const data = req.query;
-  const seachSpek = `select a.*, b.name from tr_contact a left join tr_lov b on a.type_code=b.code where a.id = '${data.ID}' `;
   let reqData: any[] = [];
-  console.log(`Получение контакта по селекту ${seachSpek}`);
-  pool.query(seachSpek, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(result.rows);
-      reqData = [
-        {
-          Lable: 'Фамилия',
-          Value: result.rows[0].last_name,
-          Type: 'text',
-          id: 'last_name',
-        },
-        {
-          Lable: 'Имя',
-          Value: result.rows[0].first_name,
-          Type: 'text',
-          id: 'first_name',
-        },
-        {
-          Lable: 'Отчество',
-          Value: result.rows[0].middle_name,
-          Type: 'text',
-          id: 'middle_name',
-        },
-        {
-          Lable: 'Телефон',
-          Value: result.rows[0].tel,
-          Type: 'tel',
-          id: 'tel',
-        },
-        {
-          Lable: 'Почта',
-          Value: result.rows[0].email,
-          Type: 'email',
-          id: 'email',
-        },
-        {
-          Lable: 'Тип',
-          Value: result.rows[0].name,
-          Type: 'select',
-          id: 'type_code',
-          // arrSelect: lov,
-        },
-        {
-          Lable: 'Комментарий',
-          Value: result.rows[0].comment,
-          Type: 'textarea',
-          id: 'comment',
-        },
-        {
-          Lable: 'Создан',
-          Value: FormatData(result.rows[0].created),
-          Type: 'data',
-          id: 'created',
-        },
-        {
-          Lable: 'Обновлен',
-          Value: FormatData(result.rows[0].update),
-          Type: 'data',
-          id: 'update',
-        },
-      ];
-      console.log(FormatData(result.rows[0].update));
-      let seach = `Select * from tr_lov where lov_type = 'CONTACT'`;
-      pool.query(seach, (err, result) => {
-        if (err) {
-          console.log(err);
-          res.status(400).json({
-            status: 'Error',
-          });
-        } else {
-          const arr = result.rows;
-          const lov = result.rows;
-          reqData.find((data) => data.id === 'type_code').arrSelect = lov;
-          res.status(200).json({
-            status: 'OK',
-            req: reqData,
-          });
-        }
-      });
-    }
-  });
+  try {
+    const contactById: any = await Contact.query()
+      .findById(data.ID)
+      .select('tr_contact.*', 'lov.name as type')
+      .leftJoinRelated('lov');
+    const lov = await LOV.query().where('lov_type', 'CONTACT');
+    console.log(contactById);
+    console.log(lov);
+    reqData = [
+      {
+        Lable: 'Фамилия',
+        Value: contactById.last_name,
+        Type: 'text',
+        id: 'last_name',
+      },
+      {
+        Lable: 'Имя',
+        Value: contactById.first_name,
+        Type: 'text',
+        id: 'first_name',
+      },
+      {
+        Lable: 'Отчество',
+        Value: contactById.middle_name,
+        Type: 'text',
+        id: 'middle_name',
+      },
+      {
+        Lable: 'Телефон',
+        Value: contactById.tel,
+        Type: 'tel',
+        id: 'tel',
+      },
+      {
+        Lable: 'Почта',
+        Value: contactById.email,
+        Type: 'email',
+        id: 'email',
+      },
+      {
+        Lable: 'Тип',
+        Value: contactById.type,
+        Type: 'select',
+        id: 'type_code',
+        arrSelect: lov,
+      },
+      {
+        Lable: 'Комментарий',
+        Value: contactById.comment,
+        Type: 'textarea',
+        id: 'comment',
+      },
+      {
+        Lable: 'Создан',
+        Value: FormatData(contactById.created),
+        Type: 'data',
+        id: 'created',
+      },
+      {
+        Lable: 'Обновлен',
+        Value: FormatData(contactById.update),
+        Type: 'data',
+        id: 'update',
+      },
+    ];
+    console.log(reqData);
+    res.status(200).json({
+      status: 'OK',
+      req: reqData,
+    });
+  } catch (error) {
+    const err = Error('Ошибка');
+    res.status(400).json({
+      req: [err],
+      status: 'Error',
+    });
+  }
 }
 //Поиск всех контактов +
 export async function getAll(
@@ -118,6 +112,7 @@ export async function getAll(
           req:
             | Error[]
             | ({ element: string; elements: { title: string; id: string }[] } | { element: string; elements: any })[];
+          status: any;
         }): void;
         new (): any;
       };
@@ -125,14 +120,14 @@ export async function getAll(
   },
 ) {
   const data = req.query;
-  const tableTitle: any = [
+  const tableTitle: TitleFieldsTable = [
     //Заголовок таблиц
     { id: 'id' },
     { id: 'full_name' },
     { id: 'tel' },
     { id: 'type' },
   ];
-  tableTitle.map((titleCode: { title: any; id: string }) => {
+  tableTitle.map((titleCode: { id: any; title?: any }) => {
     const id: string = titleCode.id;
     titleCode.title = LOVTitle[id];
   });
@@ -180,11 +175,13 @@ export async function getAll(
           elements: allContact,
         },
       ],
+      status: 'OK',
     });
   } catch (error) {
     const err = Error('Ошибка');
     res.status(400).json({
       req: [err],
+      status: 'Error',
     });
   }
 }
@@ -245,6 +242,7 @@ export async function deleteRow(
     const err = Error('Ошибка');
     res.status(400).json({
       req: [err],
+      status: 'Error',
     });
   }
 }
